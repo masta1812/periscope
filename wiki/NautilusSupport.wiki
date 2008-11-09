@@ -1,0 +1,22 @@
+#summary Add periscope support in Nautilus
+
+= Introduction =
+
+This wiki pages shows you the steps to add periscope support into Nautilus by simply doing a right-clic "Download subtitles" on a video file.
+
+
+= Details =
+
+  * Install python support in nautilus by installing python-nautilus and python-notify that shows notification on the bottom-right of your screen:
+   sudo aptitude install python-nautilus python-notify
+
+  * Install periscope from the project home page: http://code.google.com/p/periscope/
+    * Download the lastest deb and double-click on it.
+
+  * Copy the periscope-nautilus.py script into the ~/.nautilus/python-extensions
+   cd ~/.nautilus/python-extensiions
+   wget http://periscope.googlecode.com/svn/trunk/bin/periscope-nautilus.py
+
+  * Restart nautilus otherwise it does not take into account the newly added scripts by typing in a terminal "killall nautilus" until you see "nautilus: no process killed"
+
+  * Open nautilus and go to a location where you have video files. Right-click on a video and wait for the notification to see if a match was found.
