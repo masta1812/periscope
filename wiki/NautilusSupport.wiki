@@ -2,7 +2,7 @@
 
 = Introduction =
 
-This wiki pages shows you the steps to add periscope support into Nautilus by simply doing a right-clic "Download subtitles" on a video file.
+This wiki pages shows you the steps to add periscope support into Nautilus by simply doing a right-click "Download subtitles" on a video file.
 
 
 = Details =
@@ -17,7 +17,7 @@ This wiki pages shows you the steps to add periscope support into Nautilus by si
    cd ~/.nautilus/python-extensiions
    wget http://periscope.googlecode.com/svn/trunk/bin/periscope-nautilus.py
 
-  * Edit the periscope-nautilus.py if needed to change the languages. The default uses english at line 101.
+  * Edit the periscope-nautilus.py if needed to change the languages. The default uses English at line 101.
 
   * Restart nautilus otherwise it does not take into account the newly added scripts by typing in a terminal "nautilus -q"
 
