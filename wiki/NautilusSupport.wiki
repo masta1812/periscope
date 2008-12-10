@@ -8,17 +8,22 @@ This wiki pages shows you the steps to add periscope support into Nautilus by si
 = Details =
 
   * Install python support in nautilus by installing python-nautilus and python-notify that shows notification on the bottom-right of your screen:
-   sudo aptitude install python-nautilus python-notify
+  For Ubuntu:
+{{{
+sudo aptitude install python-nautilus python-notify
+}}}
 
   * Install periscope from the project home page: http://code.google.com/p/periscope/
     * Download the lastest deb and double-click on it.
 
   * Copy the periscope-nautilus.py script into the ~/.nautilus/python-extensions
-   cd ~/.nautilus/python-extensiions
-   wget http://periscope.googlecode.com/svn/trunk/bin/periscope-nautilus.py
+{{{
+cd ~/.nautilus/python-extensiions
+wget http://periscope.googlecode.com/svn/trunk/bin/periscope-nautilus.py
+}}}
 
   * Edit the periscope-nautilus.py if needed to change the languages. The default uses English at line 101.
 
-  * Restart nautilus otherwise it does not take into account the newly added scripts by typing in a terminal "nautilus -q"
+  * Restart nautilus otherwise it does not take into account the newly added scripts by typing in a terminal {{{nautilus -q}}}
 
   * Open nautilus and go to a location where you have video files. Right-click on a video and wait for the notification to see if a match was found.
