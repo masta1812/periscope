@@ -4,6 +4,8 @@
 
 This wiki pages shows you the steps to add periscope support into Nautilus by simply doing a right-click "Download subtitles" on a video file.
 
+*This wiki reflects details for the latest version of the package*
+
 
 = Details =
 
@@ -18,11 +20,16 @@ sudo aptitude install python-nautilus python-notify
 
   * Copy the periscope-nautilus.py script into the ~/.nautilus/python-extensions
 {{{
-cd ~/.nautilus/python-extensiions
+cd ~/.nautilus/python-extensions
 wget http://periscope.googlecode.com/svn/trunk/bin/periscope-nautilus.py
 }}}
 
-  * Edit the periscope-nautilus.py if needed to change the languages. The default uses English at line 101.
+  * If you want to change the default languages, run periscope once, a file named "config" will be created under ~/.config/periscope. Update this file to reflect your prefered languages. They can be separated by comas, so:
+lang = en 
+or
+lang = en,fr
+
+are valid. The first one saying that you want to search subtitles in english, the second, in english and if not found, in french.
 
   * Restart nautilus otherwise it does not take into account the newly added scripts by typing in a terminal {{{nautilus -q}}}
 
