@@ -6,6 +6,9 @@ This wiki pages shows you the steps to add periscope support into Nautilus by si
 
 *This wiki reflects details for the latest version of the package*
 
+= Ubuntu user =
+
+If you use Ubuntu, you may prefer to install the *periscope-gnome* package from the [http://code.google.com/p/periscope/downloads/list download page]
 
 = Details =
 
