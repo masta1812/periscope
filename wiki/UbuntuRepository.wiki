@@ -1,0 +1,15 @@
+#summary How to add periscope repository in Ubuntu
+#labels Featured
+
+= Introduction =
+
+Ubuntu uses a powerful repository system to keep your software updated. This page tells you how to add the repository for periscope.
+
+
+= Details =
+
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
