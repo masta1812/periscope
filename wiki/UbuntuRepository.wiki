@@ -8,8 +8,13 @@ Ubuntu uses a powerful repository system to keep your software updated. This pag
 
 = Details =
 
+Open Synaptic (System > Administration > Synaptic Software Manager)
+Go to Settings > Repositories
+Click on the "Third-Party Software" tab and click on Add.
+The apt-line to insert is:
+{{{
+deb http://ppa.launchpad.net/patrick-dessalle/ppa/ubuntu jaunty main
+}}}
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+You can find more info on the PPA page:
+https://launchpad.net/~patrick-dessalle/+archive/ppa
