@@ -19,12 +19,12 @@ sudo aptitude install python-nautilus python-notify
 }}}
 
   * Install periscope from the project home page: http://code.google.com/p/periscope/
-    * Download the lastest deb and double-click on it.
+    * Ubuntu/Debian users : Download the lastest debs (python-periscope and periscope-gnome) and double-click on it. That's it.
 
   * Copy the periscope-nautilus.py script into the ~/.nautilus/python-extensions
 {{{
 cd ~/.nautilus/python-extensions
-wget http://periscope.googlecode.com/svn/trunk/bin/periscope-nautilus.py
+wget http://periscope.googlecode.com/svn/trunk/bin/periscope-nautilus/periscope-nautilus.py
 }}}
 
   * If you want to change the default languages, run periscope once, a file named "config" will be created under ~/.config/periscope. Update this file to reflect your prefered languages. They can be separated by comas, so:
