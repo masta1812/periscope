@@ -8,7 +8,7 @@ Ubuntu uses a powerful repository system to keep your software updated. This pag
 
 = Details =
 
-Ubuntu 9.10 (Karmic Koala) users, add the repository by typing in a terminal:
+Ubuntu 9.10 and after (Karmic Koala, Lucid Lynx) users, add the repository by typing in a terminal:
 {{{
 sudo add-apt-repository ppa:patrick-dessalle/ppa
 }}}
