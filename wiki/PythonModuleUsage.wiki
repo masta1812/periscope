@@ -30,4 +30,11 @@ subs = subdl.listSubtitles(filepath, ['fr', 'es']) # subtitles in German, but if
 
 for sub in subs :
     print "Found a sub from %s in language %s, downloaded to %s" % ( subtitle['plugin'], subtitle['lang'], subtitle['subtitlepath']
+
+# if you wish to download the second sub:
+subdl.attemptDownloadSubtitle([sub[1]], None) # the method is named "attempt" because it may fail for some reason
+
+# if you've identified multiple good candidates (here the first three) and wish to attempt to donwload the first, if it fails, the second, if it fails the third :
+subdl.attemptDownloadSubtitle([sub[0:2]], None)
+
 }}}
