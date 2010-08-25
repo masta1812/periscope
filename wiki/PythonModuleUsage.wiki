@@ -1,0 +1,17 @@
+#summary How to use periscope as a python module
+
+= Introduction =
+
+Periscope is a subtitle download module written in Python. It allows you to easily search for subtitles for a given file on your harddrive on multiple subtitle websites.
+
+
+= Download a subtitle for a file =
+
+{{{
+import periscope
+subdl = periscope.Periscope()
+filepath = '/home/user/myVideo.avi'
+subdl.downloadSubtitle(filepath, ['en']) # for english only
+subdl.downloadSubtitle(filepath, None) # for any language
+subdl.downloadSubtitle(filepath, ['de', 'en']) # subtitles in German, but if not found in English
+}}}
