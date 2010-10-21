@@ -17,7 +17,7 @@ subdl = periscope.Periscope()
 filepath = '/home/user/myVideo.avi'
 subtitle = subdl.downloadSubtitle(filepath, ['en']) # for english only
 subtitle = subdl.downloadSubtitle(filepath, None) # for any language
-subtitle = subdl.downloadSubtitle(filepath, ['de', 'en']) # subtitles in German, but if not found in English
+subtitle = subdl.downloadSubtitle(filepath, ['de', 'en']) # subtitles in German, if none are found, search in English
 
 if subtitle :
     print "Found a sub from %s in language %s, downloaded to %s" % ( subtitle['plugin'], subtitle['lang'], subtitle['subtitlepath']
@@ -29,7 +29,7 @@ if subtitle :
 import periscope
 subdl = periscope.Periscope()
 filepath = '/home/user/myVideo.avi'
-subs = subdl.listSubtitles(filepath, ['fr', 'es']) # subtitles in German, but if not found in English
+subs = subdl.listSubtitles(filepath, ['fr', 'es']) # subtitles in French, if none are found, search in Spanish
 
 for sub in subs :
     print "Found a sub from %s in language %s, downloaded to %s" % ( subtitle['plugin'], subtitle['lang'], subtitle['subtitlepath']
