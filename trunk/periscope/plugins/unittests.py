@@ -35,7 +35,7 @@ class SubtitulosTestCase(unittest.TestCase):
         if guessedData['type'] == 'tvshow':
             subs = subdb.query(guessedData['name'], guessedData['season'], guessedData['episode'], guessedData['teams'])
             print subs
-'''
+
 class Addic7edTestCase(unittest.TestCase):
     def runTest(self):
         import Addic7ed
@@ -52,14 +52,15 @@ class Addic7edTestCase(unittest.TestCase):
     def runTest(self):
         import Addic7ed
         subdb = Addic7ed.Addic7ed()
-        fname = "rubicon.s01e01.repack.hdtv.xvid-fqm.avi"
+        #fname = "rubicon.s01e01.repack.hdtv.xvid-fqm.avi"
+        fname = "24.1x03.2.00.am_3.00.am.ac3.dvdrip_ws_xvid-fov.avi"
         guessedData = subdb.guessFileData(fname)
         print fname
         print guessedData
         if guessedData['type'] == 'tvshow':
             subs = subdb.query(guessedData['name'], guessedData['season'], guessedData['episode'], guessedData['teams'])
             print subs
-'''
+
 class OpenSubtitlesTestCase(unittest.TestCase):
     def runTest(self):
         import OpenSubtitles
@@ -205,17 +206,18 @@ class TvSubtitlesTestCase(unittest.TestCase):
         subs = subdb.query(guessedData['name'], guessedData['season'], guessedData['episode'], guessedData['teams'], ['en'])
         for s in subs:
             print "Sub : %s" %s
-
+'''
 class BierDopjeTestCase(unittest.TestCase):
     def runTest(self):
         import BierDopje
         subdb = BierDopje.BierDopje()
-        #results = subdb.query("Dexter.S04E01.HDTV.XviD-NoTV")
-        #results = subdb.query("the.walking.dead.s01e02.720p.hdtv.x264-ctu")
-        results = subdb.query("The.Office.US.S07E08.Viewing.Party.HDTV.XviD-FQM.[VTV]")
+        video = "The.Office.US.S07E08.Viewing.Party.HDTV.XviD-FQM.[VTV]"
+        #video = "Dexter.S04E01.HDTV.XviD-NoTV"
+        #video = "the.walking.dead.s01e02.720p.hdtv.x264-ctu"
+        video = "the.mentalist.s01e06.720p.hdtv.x264-ctu"
+        results = subdb.query(video)
         print results
-        assert len(results) > 0, "No result could be found for Dexter.S04E01.HDTV.XviD-NoTV and no languages"
-'''
+        assert len(results) > 0, "No result could be found for %s and no languages" %( video )
 
 
 if __name__ == "__main__":

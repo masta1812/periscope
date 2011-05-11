@@ -59,6 +59,7 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
         try : 
             page = urllib2.urlopen(req, timeout=5)
             content = page.readlines()
+            logging.info("content : %s" % content)
             plugin_langs = content[0].split(',')
             for lang in plugin_langs :
                 if not langs or lang in langs:
@@ -70,6 +71,7 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
                     subs.append(result)
             return subs
         except urllib2.HTTPError, e :
+            logging.error('Error occured : %s' % e)
             if e.code == 404 : # No result found
                 return subs
         
@@ -104,3 +106,24 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
         dump.close()
         f.close()
         logging.debug("Download finished to file %s. Size : %s"%(srtfilename,os.path.getsize(srtfilename)))
+        
+    def uploadFile(self, filepath, subpath, lang):
+        # Get the hash
+        filehash = self.get_hash(filepath)
+        logging.debug('File hash : %s' % filehash)
+        
+        # Upload the subtitle
+        upload_url = "%s?action=%s" % ('http://api.thesubdb.com/', "upload")
+        logging.debug('Query URL : %s' % upload_url)
+        sub = open(subpath, "r")
+        req = urllib2.Request(upload_url, data=sub.read())
+        req.add_header('User-Agent', self.user_agent)
+        try : 
+            page = urllib2.urlopen(req, timeout=5)
+        except urllib2.HTTPError, e :
+            logging.error('Error occured : %s' % e)
+            if e.code == 404 : # No result found
+                return subs
+        
+        sub.close()
+        
