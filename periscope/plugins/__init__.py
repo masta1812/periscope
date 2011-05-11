@@ -20,10 +20,10 @@ from OpenSubtitles import OpenSubtitles
 #from SubtitleSource import SubtitleSource
 #from SubScene import SubScene
 from Subtitulos import Subtitulos
-from Addic7ed import Addic7ed
+#from Addic7ed import Addic7ed
 from Podnapisi import Podnapisi
 from TheSubDB import TheSubDB
-from BierDopje import BierDopje
+#from BierDopje import BierDopje
 
 
 #from TvSubtitles import TvSubtitles
