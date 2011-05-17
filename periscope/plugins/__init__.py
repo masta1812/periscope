@@ -17,14 +17,18 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 from OpenSubtitles import OpenSubtitles
-#from SubtitleSource import SubtitleSource
-#from SubScene import SubScene
+from SubtitleSource import SubtitleSource
 from Subtitulos import Subtitulos
-#from Addic7ed import Addic7ed
 from Podnapisi import Podnapisi
 from TheSubDB import TheSubDB
-#from BierDopje import BierDopje
+from BierDopje import BierDopje
 
+# Not working anymore (download fails)
+#from SubScene import SubScene
 
+# Don't want to be included
+#from Addic7ed import Addic7ed
 #from TvSubtitles import TvSubtitles
+
+# API not working
 #from Podnapisi2 import Podnapisi

@@ -181,20 +181,15 @@ class PodnapisiTestCaseMultiPart(unittest.TestCase):
         import Podnapisi
         subdb = Podnapisi.Podnapisi()
         results = subdb.process("/tmp/Catwoman.CAM-NOX-CD1.avi", None)
-        print results
         assert len(results) > 0
         results = subdb.process("/tmp/Catwoman.CAM-NOX-CD2.avi", None)
-        print results
         assert len(results) > 0
-        
-        Catwoman.CAM-NOX-CD1
 
 class PodnapisiTestCaseTwoSerbian(unittest.TestCase):
     def runTest(self):
         import Podnapisi
         subdb = Podnapisi.Podnapisi()
         results = subdb.process("Twilight[2008]DvDrip-aXXo", None)
-        print results
         assert len(results) > 0, "Not enough result could be found"
 
 class TvSubtitlesTestCase(unittest.TestCase):
@@ -206,7 +201,7 @@ class TvSubtitlesTestCase(unittest.TestCase):
         subs = subdb.query(guessedData['name'], guessedData['season'], guessedData['episode'], guessedData['teams'], ['en'])
         for s in subs:
             print "Sub : %s" %s
-'''
+
 class BierDopjeTestCase(unittest.TestCase):
     def runTest(self):
         import BierDopje
@@ -218,7 +213,7 @@ class BierDopjeTestCase(unittest.TestCase):
         results = subdb.query(video)
         print results
         assert len(results) > 0, "No result could be found for %s and no languages" %( video )
-
+'''
 
 if __name__ == "__main__":
     unittest.main()

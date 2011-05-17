@@ -21,6 +21,8 @@ from BeautifulSoup import BeautifulSoup
 
 import SubtitleDatabase
 
+log = logging.getLogger(__name__)
+
 LANGUAGES = {u"English (US)" : "en",
 			 u"English (UK)" : "en",
 			 u"English" : "en",
@@ -37,7 +39,7 @@ class Subtitulos(SubtitleDatabase.SubtitleDB):
 	url = "http://www.subtitulos.es"
 	site_name = "Subtitulos"
 
-	def __init__(self):
+	def __init__(self, config, cache_folder_path):
 		super(Subtitulos, self).__init__(langs=None,revertlangs=LANGUAGES)
 		#http://www.subtitulos.es/dexter/4x01
 		self.host = "http://www.subtitulos.es"
@@ -60,21 +62,18 @@ class Subtitulos(SubtitleDatabase.SubtitleDB):
 		sublinks = []
 		name = name.lower().replace(" ", "-")
 		searchurl = "%s/%s/%sx%s" %(self.host, name, season, episode)
-		logging.debug("dl'ing %s" %searchurl)
-		try:
-			page = urllib2.urlopen(searchurl)
-		except urllib2.HTTPError as inst:
-			logging.debug("Error : %s for %s" % (searchurl, inst))
-			return sublinks
+		content = self.downloadContent(searchurl, 10)
+		if not content:
+		    return sublinks
 		
-		soup = BeautifulSoup(page)
+		soup = BeautifulSoup(content)
 		for subs in soup("td", {"class":"NewsTitle"}):
 			subteams = self.release_pattern.match("%s"%subs.contents[1]).groups()[0].lower()			
 			teams = set(teams)
 			subteams = self.listTeams([subteams], [".", "_", " "])
 			
-			logging.debug("Team from website: %s" %subteams)
-			logging.debug("Team from file: %s" %teams)
+			log.debug("Team from website: %s" %subteams)
+			log.debug("Team from file: %s" %teams)
 			
 			#langs_html = subs.findNext("td", {"class" : "language"})
 			#lang = self.getLG(langs_html.string.strip())
@@ -102,7 +101,7 @@ class Subtitulos(SubtitleDatabase.SubtitleDB):
 		teams = []
 		for sep in separators:
 			subteams = self.splitTeam(subteams, sep)
-		logging.debug(subteams)
+		log.debug(subteams)
 		return set(subteams)
 	
 	def splitTeam(self, subteams, sep):

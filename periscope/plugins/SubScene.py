@@ -60,7 +60,7 @@ class SubScene(SubtitleDatabase.SubtitleDB):
 	url = "http://subscene.com/"
 	site_name = "SubScene"
 
-	def __init__(self):
+	def __init__(self, config, cache_folder_path):
 		super(SubScene, self).__init__(SS_LANGUAGES)
 		#http://subscene.com/s.aspx?subtitle=Dexter.S04E01.HDTV.XviD-NoTV
 		self.host = "http://subscene.com/s.aspx?subtitle="

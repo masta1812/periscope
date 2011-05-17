@@ -40,7 +40,7 @@ class SubtitleSource(SubtitleDatabase.SubtitleDB):
     url = "http://www.subtitlesource.org/"
     site_name = "SubtitleSource"
 
-    def __init__(self):
+    def __init__(self, config, cache_folder_path):
         super(SubtitleSource, self).__init__(SS_LANGUAGES)
         if is_local : 
             config = ConfigParser.SafeConfigParser()
