@@ -22,6 +22,7 @@ from Subtitulos import Subtitulos
 from Podnapisi import Podnapisi
 from TheSubDB import TheSubDB
 from BierDopje import BierDopje
+from SubsWiki import SubsWiki
 
 # Not working anymore (download fails)
 #from SubScene import SubScene
