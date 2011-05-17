@@ -23,6 +23,8 @@ from optparse import OptionParser
 import logging
 import periscope
 
+log = logging.getLogger(__name__)
+
 SUPPORTED_FORMATS = 'video/x-msvideo', 'video/quicktime', 'video/x-matroska', 'video/mp4'
 
 def main():
@@ -72,7 +74,7 @@ def main():
     subs = []
     for arg in videos:
         if not options.langs: #Look into the config
-            logging.info("No lang given, looking into config file")
+            log.info("No lang given, looking into config file")
             langs = periscope_client.preferedLanguages
         else:
             langs = options.langs
@@ -80,11 +82,11 @@ def main():
         if sub:
             subs.append(sub)
     
-    logging.warn("*"*50)
-    logging.warn("Downloaded %s subtitles" %len(subs))
+    log.info("*"*50)
+    log.info("Downloaded %s subtitles" %len(subs))
     for s in subs:
-        logging.warn(s['lang'] + " - " + s['subtitlepath'])
-    logging.warn("*"*50)
+        log.info(s['lang'] + " - " + s['subtitlepath'])
+    log.info("*"*50)
     if len(subs) == 0:
         exit(1)
 
@@ -106,9 +108,9 @@ def recursive_search(entry, options):
             if options.force_download or not (os.path.exists(basepath+'.srt') or os.path.exists(basepath + '.sub')):
                 files.append(os.path.normpath(entry))
             else:
-                logging.info("Skipping file %s as it already has a subtitle. Use the --force option to force the download" % entry)
+                log.info("Skipping file %s as it already has a subtitle. Use the --force option to force the download" % entry)
         else :
-            logging.info("%s mimetype is '%s' which is not a supported video format (%s)" %(entry, mimetype, SUPPORTED_FORMATS))
+            log.info("%s mimetype is '%s' which is not a supported video format (%s)" %(entry, mimetype, SUPPORTED_FORMATS))
     return files
     
 if __name__ == "__main__":

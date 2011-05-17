@@ -23,8 +23,11 @@ import xml.dom.minidom
 import logging
 import traceback
 import hashlib
+import StringIO
 
 import SubtitleDatabase
+
+log = logging.getLogger(__name__)
 
 SS_LANGUAGES = {"en": "en",
                 "nl": "nl",
@@ -40,26 +43,27 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
     site_name = "SubDB"
     user_agent = "SubDB/1.0 (periscope/0.1; http://code.google.com/p/periscope)"
 
-    def __init__(self):
+    def __init__(self, config, cache_folder_path):
         super(TheSubDB, self).__init__(SS_LANGUAGES)
-        self.host = "http://api.thesubdb.com/"
+        self.base_url = 'http://api.thesubdb.com/?{0}'
             
     def process(self, filepath, langs):
         ''' main method to call on the plugin, pass the filename and the wished 
         languages and it will query the subtitles source '''
         # Get the hash
         filehash = self.get_hash(filepath)
-        logging.debug('File hash : %s' % filehash)
+        log.debug('File hash : %s' % filehash)
         # Make the search
-        search_url = "%s?action=%s&hash=%s" % (self.host, "search", filehash)
-        logging.debug('Query URL : %s' % search_url)
+        params = {'action' : 'download', 'hash' : filehash}
+        search_url = self.base_url.format(urllib.urlencode(params))
+        log.debug('Query URL : %s' % search_url)
         req = urllib2.Request(search_url)
         req.add_header('User-Agent', self.user_agent)
         subs = []
         try : 
             page = urllib2.urlopen(req, timeout=5)
             content = page.readlines()
-            logging.info("content : %s" % content)
+            log.info("content : %s" % content)
             plugin_langs = content[0].split(',')
             for lang in plugin_langs :
                 if not langs or lang in langs:
@@ -71,9 +75,10 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
                     subs.append(result)
             return subs
         except urllib2.HTTPError, e :
-            logging.error('Error occured : %s' % e)
             if e.code == 404 : # No result found
                 return subs
+            else:
+                log.exception('Error occured : %s' % e)
         
 
     def get_hash(self, name):
@@ -105,25 +110,36 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
         dump.write(f.read())
         dump.close()
         f.close()
-        logging.debug("Download finished to file %s. Size : %s"%(srtfilename,os.path.getsize(srtfilename)))
+        log.debug("Download finished to file %s. Size : %s"%(srtfilename,os.path.getsize(srtfilename)))
         
     def uploadFile(self, filepath, subpath, lang):
         # Get the hash
         filehash = self.get_hash(filepath)
-        logging.debug('File hash : %s' % filehash)
+        log.debug('File hash : %s' % filehash)
         
         # Upload the subtitle
-        upload_url = "%s?action=%s" % ('http://api.thesubdb.com/', "upload")
-        logging.debug('Query URL : %s' % upload_url)
+        params = {'action' : 'upload', 'hash' : filehash}
+        upload_url = self.base_url.format(urllib.urlencode(params))
+        log.debug('Query URL : %s' % upload_url)
         sub = open(subpath, "r")
-        req = urllib2.Request(upload_url, data=sub.read())
+        content = sub.read()
+        sub.close()
+        fd = StringIO.StringIO()
+        fd.name = '%s.srt' % filehash
+        fd.write(content)
+        
+        data = {'hash' : filehash, 'file' : fd}
+        req = urllib2.Request(upload_url)
         req.add_header('User-Agent', self.user_agent)
         try : 
-            page = urllib2.urlopen(req, timeout=5)
+            page = urllib2.urlopen(req, data, timeout=5)
+            log.debug(page.readlines())
         except urllib2.HTTPError, e :
-            logging.error('Error occured : %s' % e)
-            if e.code == 404 : # No result found
-                return subs
-        
-        sub.close()
+            log.exception('Error occured while uploading : %s' % e)
+            log.info(fd.name)
+            log.info(fd.len)
+            print dir(fd)
+            print fd.readlines()
+        finally:
+            fd.close()
         
