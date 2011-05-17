@@ -46,6 +46,7 @@ class SubtitleDB(object):
             map(lambda item: item.setdefault("filename", filename), subs)
             log.info("%s writing %s items to queue" % (self.__class__.__name__, len(subs)))
         except:
+            log.exception("Error occured")
             subs = []
         queue.put(subs, True) # Each plugin must write as the caller periscopy.py waits for an result on the queue
     
@@ -56,8 +57,7 @@ class SubtitleDB(object):
         try:
             return self.query(fname, langs)
         except Exception, e:
-            log.error("Error raised by plugin %s: %s" %(self.__class__.__name__, e))
-            traceback.print_exc()
+            log.exception("Error occured")
             return []
         
     def createFile(self, subtitle):
