@@ -17,6 +17,7 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import os, shutil, urllib2, sys, logging, traceback, zipfile
+import struct
 import socket # For timeout purposes
 import re
 
@@ -180,18 +181,17 @@ class SubtitleDB(object):
         Calculates the Hash à-la Media Player Classic as it is the hash used by OpenSubtitles.
         By the way, this is not a very robust hash code.
         ''' 
-        
         longlongformat = 'Q'  # unsigned long long little endian
-        bytesize = struct.calcsize(longlongformat) 
+        bytesize = struct.calcsize(longlongformat)
         format= "<%d%s" % (65536//bytesize, longlongformat)
         
         f = open(name, "rb") 
-                
         filesize = os.fstat(f.fileno()).st_size
         hash = filesize 
         
-        if filesize < 65536 * 2: 
-           return "SizeError" 
+        if filesize < 65536 * 2:
+            log.error('File is too small')
+            return "SizeError" 
         
         buffer= f.read(65536)
         longlongs= struct.unpack(format, buffer)
