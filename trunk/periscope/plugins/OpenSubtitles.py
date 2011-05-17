@@ -90,6 +90,7 @@ class OpenSubtitles(SubtitleDatabase.SubtitleDB):
         languages and it will query OpenSubtitles.org '''
         if os.path.isfile(filepath):
             filehash = self.hashFile(filepath)
+            log.debug(filehash)
             size = os.path.getsize(filepath)
             fname = self.getFileName(filepath)
             return self.query(moviehash=filehash, langs=langs, bytesize=size, filename=fname)
@@ -115,7 +116,7 @@ class OpenSubtitles(SubtitleDatabase.SubtitleDB):
     def query(self, filename, imdbID=None, moviehash=None, bytesize=None, langs=None):
         ''' Makes a query on opensubtitles and returns info about found subtitles.
             Note: if using moviehash, bytesize is required.    '''
-            
+        log.debug('query')
         #Prepare the search
         search = {}
         sublinks = []
