@@ -45,16 +45,22 @@ VERSION = version.VERSION
 class Periscope:
     ''' Main Periscope class'''
     
-    def __init__(self):
+    def __init__(self, cache_folder=None):
         self.config = ConfigParser.SafeConfigParser({"lang": "", "plugins" : "" })
-        if is_local:
-            self.config_file = os.path.join(bd.xdg_config_home, "periscope", "config")
-            self.cache_path = os.path.join(bd.xdg_config_home, "periscope")
-            if not os.path.exists(self.config_file):
-                folder = os.path.dirname(self.config_file)
-                if not os.path.exists(folder):
-                    log.info("Creating folder %s" %folder)
-                    os.mkdir(folder)
+        if not cache_folder:
+            try:
+                import xdg.BaseDirectory as bd
+                cache_folder = os.path.join(bd.xdg_config_home, "periscope")
+            except:
+                log.exception("Could not generate a cache folder at the home location using XDG (freedesktop)")
+
+        self.config_file = os.path.join(cache_folder, "config")
+        self.cache_path = cache_folder
+        if not os.path.exists(self.config_file):
+            folder = os.path.dirname(self.config_file)
+            if not os.path.exists(folder):
+                log.info("Creating folder %s" %folder)
+                os.mkdir(folder)
                 log.info("Creating config file")
                 configfile = open(self.config_file, "w")
                 self.config.write(configfile)
