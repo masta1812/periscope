@@ -122,24 +122,23 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
         upload_url = self.base_url.format(urllib.urlencode(params))
         log.debug('Query URL : %s' % upload_url)
         sub = open(subpath, "r")
-        content = sub.read()
+        '''content = sub.read()
         sub.close()
         fd = StringIO.StringIO()
         fd.name = '%s.srt' % filehash
-        fd.write(content)
+        fd.write(content)'''
         
-        data = {'hash' : filehash, 'file' : fd}
-        req = urllib2.Request(upload_url)
+        data = urllib.urlencode({'hash' : filehash, 'file' : sub})
+        req = urllib2.Request(upload_url, data)
         req.add_header('User-Agent', self.user_agent)
         try : 
             page = urllib2.urlopen(req, data, timeout=5)
             log.debug(page.readlines())
         except urllib2.HTTPError, e :
             log.exception('Error occured while uploading : %s' % e)
-            log.info(fd.name)
-            log.info(fd.len)
-            print dir(fd)
-            print fd.readlines()
+            #log.info(fd.name)
+            #log.info(fd.len)
         finally:
-            fd.close()
+            pass
+            #fd.close()
         
