@@ -65,9 +65,9 @@ class Periscope:
                 configfile = open(self.config_file, "w")
                 self.config.write(configfile)
                 configfile.close()
-            else:
-                #Load it
-                self.config.read(self.config_file)
+        else:
+            #Load it
+            self.config.read(self.config_file)
 
         self.pluginNames = self.get_preferedPlugins()
         self._preferedLanguages = None
