@@ -110,7 +110,7 @@ class OpenSubtitles(SubtitleDatabase.SubtitleDB):
         dump.write(f.read())
         dump.close()
         f.close()
-        #os.remove(srtbasefilename+".srt.gz")
+        os.remove(srtbasefilename+".srt.gz")
         return srtbasefilename+".srt"
 
     def query(self, filename, imdbID=None, moviehash=None, bytesize=None, langs=None):
