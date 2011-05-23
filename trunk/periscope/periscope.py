@@ -46,14 +46,7 @@ class Periscope:
     ''' Main Periscope class'''
     
     def __init__(self, cache_folder=None):
-        self.config = ConfigParser.SafeConfigParser({"lang": "", "plugins" : "" })
-        if not cache_folder:
-            try:
-                import xdg.BaseDirectory as bd
-                cache_folder = os.path.join(bd.xdg_config_home, "periscope")
-            except:
-                log.exception("Could not generate a cache folder at the home location using XDG (freedesktop)")
-
+        self.config = ConfigParser.SafeConfigParser({"lang": "", "plugins" : "" })        
         self.config_file = os.path.join(cache_folder, "config")
         self.cache_path = cache_folder
         if not os.path.exists(self.config_file):
