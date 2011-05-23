@@ -42,11 +42,10 @@ class SubtitleSource(SubtitleDatabase.SubtitleDB):
 
     def __init__(self, config, cache_folder_path):
         super(SubtitleSource, self).__init__(SS_LANGUAGES)
-        if is_local : 
-            config = ConfigParser.SafeConfigParser()
-            config_file = os.path.join(bd.xdg_config_home, "periscope", "config")
-            config.read(config_file)
-            key = config.get("SubtitleSource", "key") # You need to ask for it
+        key = config.get("SubtitleSource", "key") # You need to ask for it
+        if not key:
+            log.error("No key in the config file for SubtitleSource")
+            return
         #http://www.subtitlesource.org/api/KEY/3.0/xmlsearch/Heroes.S03E09.HDTV.XviD-LOL/all/0
         #http://www.subtitlesource.org/api/KEY/3.0/xmlsearch/heroes/swedish/0
 
@@ -55,6 +54,9 @@ class SubtitleSource(SubtitleDatabase.SubtitleDB):
     def process(self, filepath, langs):
         ''' main method to call on the plugin, pass the filename and the wished 
         languages and it will query the subtitles source '''
+        if not key:
+            log.info("No key in the config file for SubtitleSource : skip")
+            return []
         fname = self.getFileName(filepath)
         try:
             subs = self.query(fname, langs)
