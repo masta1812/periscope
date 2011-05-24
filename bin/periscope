@@ -44,16 +44,6 @@ def main():
     if not args:
         print parser.print_help()
         exit()
-        
-
-    if not options.cache_folder:
-        try:
-            import xdg.BaseDirectory as bd
-            options.cache_folder = os.path.join(bd.xdg_config_home, "periscope")
-        except:
-            log.error("Could not generate a cache folder at the home location using XDG (freedesktop)")
-    
-    periscope_client = periscope.Periscope(options.cache_folder)
 
     # process args
     if options.debug :
@@ -62,6 +52,17 @@ def main():
         logging.basicConfig(level=logging.WARN)
     else :
         logging.basicConfig(level=logging.INFO)
+        
+
+    if not options.cache_folder:
+        try:
+            import xdg.BaseDirectory as bd
+            options.cache_folder = os.path.join(bd.xdg_config_home, "periscope")
+        except:
+            log.error("Could not generate a cache folder at the home location using XDG (freedesktop). You must specify a --cache-config folder where the cache and config will be located (always use the same folder).")
+            exit()
+    
+    periscope_client = periscope.Periscope(options.cache_folder)
         
     if options.show_active_plugins:
         print "Active plugins: "
