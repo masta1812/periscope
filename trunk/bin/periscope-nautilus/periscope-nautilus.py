@@ -23,6 +23,8 @@ import os
 import threading
 import gettext
 import gio
+import logging
+import xdg.BaseDirectory as bd # required
 try:
     import pynotify
 except ImportError:
@@ -39,6 +41,7 @@ class DownloadSubtitles(nautilus.MenuProvider):
     def __init__(self):
         if pynotify:
             pynotify.init("periscope subtitles downloader")
+        self.cache_folder = os.path.join(bd.xdg_config_home, "periscope")
     
     def menu_activate_cb(self, menu, files):
         #List the valid files
@@ -48,7 +51,7 @@ class DownloadSubtitles(nautilus.MenuProvider):
         videos = map(lambda f: g.get_file_for_uri(f.get_uri()).get_path(), videos)
         
         # Call the thread        
-        invoker = PeriscopeInvoker(videos, self.notify)
+        invoker = PeriscopeInvoker(videos, self.notify, self.cache_folder)
         invoker.start()
         # Run the GTK mainloop
         gtk.main()
@@ -94,15 +97,16 @@ class DownloadSubtitles(nautilus.MenuProvider):
         
 class PeriscopeInvoker(threading.Thread):
     ''' Thread that will call persicope in the background'''
-    def __init__(self, filenames, callback):
+    def __init__(self, filenames, callback, cache_folder):
         self.filenames = filenames
         self.callback = callback
         self.found = []
         self.notfound = []
+        self.cache_folder = cache_folder
         threading.Thread.__init__(self)
 
     def run(self):
-        subdl = periscope.Periscope()
+        subdl = periscope.Periscope(self.cache_folder)
         print "prefered languages: %s" %subdl.preferedLanguages
         for filename in self.filenames:
             subtitle = subdl.downloadSubtitle(filename, subdl.preferedLanguages)
