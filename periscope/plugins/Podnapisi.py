@@ -110,7 +110,7 @@ class Podnapisi(SubtitleDatabase.SubtitleDB):
         subpage = subtitle["page"]
         
         # Parse the subpage and extract the link
-        content = self.downloadContent(searchurl, timeout = 10)
+        content = self.downloadContent(subpage, timeout = 10)
         if not content:
             return sublinks
 
