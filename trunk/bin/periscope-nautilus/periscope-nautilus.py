@@ -17,7 +17,6 @@
 #    along with periscope; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gtk
 import urllib2
 import nautilus
 import os
@@ -26,6 +25,9 @@ import gettext
 import gio
 import logging
 import xdg.BaseDirectory as bd # required
+
+gettext.textdomain('periscope-nautilus')
+
 try:
     import pynotify
 except ImportError:
@@ -54,8 +56,6 @@ class DownloadSubtitles(nautilus.MenuProvider):
         # Call the thread        
         invoker = PeriscopeInvoker(videos, self.notify, self.cache_folder)
         invoker.start()
-        # Run the GTK mainloop
-        gtk.main()
                 
         
     def get_file_items(self, window, files):
@@ -108,7 +108,6 @@ class PeriscopeInvoker(threading.Thread):
 
     def run(self):
         subdl = periscope.Periscope(self.cache_folder)
-        print "prefered languages: %s" %subdl.preferedLanguages
         for filename in self.filenames:
             subtitle = subdl.downloadSubtitle(filename, subdl.preferedLanguages)
             if subtitle:
