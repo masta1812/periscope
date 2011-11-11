@@ -2,6 +2,7 @@
 
 #   This file is part of periscope.
 #   Copyright (c) 2008-2011 Patrick Dessalle <patrick@dessalle.be>
+#   Ported to GTK3/PyGI with multiprocessing by Shock <shock@corezero.net>
 #
 #    periscope is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public
@@ -17,19 +18,17 @@
 #    along with periscope; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import urllib2
-import nautilus
+from gi.repository import Gtk, Gio, GObject, Nautilus
+from multiprocessing import Process, Queue
+from Queue import Empty
+from time import sleep
+# import urllib2
 import os
-import threading
 import gettext
-import gio
-import logging
+# import logging
 import xdg.BaseDirectory as bd # required
-
-gettext.textdomain('periscope-nautilus')
-
 try:
-    import pynotify
+    from gi.repository import Notify
 except ImportError:
     pass
 
@@ -38,80 +37,94 @@ import periscope
 # i18n stuff
 gettext.install('periscope-nautilus')
 
-class DownloadSubtitles(nautilus.MenuProvider):
+class DownloadSubtitles(GObject.GObject, Nautilus.MenuProvider):
     ''' This class is to be used in Nautilus with the python-nautilus extension. 
     It provides a context menu on video file to download subtitles.'''
     def __init__(self):
-        if pynotify:
-            pynotify.init("periscope subtitles downloader")
+        if Notify:
+            Notify.init("periscope subtitles downloader")
         self.cache_folder = os.path.join(bd.xdg_config_home, "periscope")
-    
-    def menu_activate_cb(self, menu, files):
-        #List the valid files
-        videos = [f for f in files if not f.is_gone() and self.is_valid(f)]
-        # Get the file paths from gvfs so we support non local file systems, yay!
-        g = gio.vfs_get_default()
-        videos = map(lambda f: g.get_file_for_uri(f.get_uri()).get_path(), videos)
-        
-        # Call the thread        
-        invoker = PeriscopeInvoker(videos, self.notify, self.cache_folder)
-        invoker.start()
-                
-        
+
     def get_file_items(self, window, files):
         # Keep only the files we want (right type and file)
         files = [ f for f in files if self.is_valid(f)]
         if len(files) == 0:
             return
 
-        item = nautilus.MenuItem('Nautilus::download_subtitles',
-                                 _('Find subtitles for this video'),
-                                 _('Download subtitles for this video'),
-                                 gtk.STOCK_FIND_AND_REPLACE)
+        item = Nautilus.MenuItem(name='Nautilus::download_subtitles',
+                                 label=_('Find subtitles for this video'),
+                                 tip=_('Download subtitles for this video'),
+                                 icon=Gtk.STOCK_FIND_AND_REPLACE)
         item.connect('activate', self.menu_activate_cb, files)
         return item,
-        
+
+    def menu_activate_cb(self, menu, files):
+        #List the valid files
+        videos = [f for f in files if not f.is_gone() and self.is_valid(f)]
+        # Get the file paths from gvfs so we support non local file systems, yay!
+        g = Gio.Vfs.get_default()
+        videos = map(lambda f: g.get_file_for_uri(f.get_uri()).get_path(), videos)
+
+        # Download the subtitles in a new process and get the results in this process via a Queue
+        queue = Queue()
+        invoker = PeriscopeInvoker(videos, self.cache_folder, queue)
+        invoker.start()
+        result = []
+        while not result:
+            try:
+                result = queue.get_nowait()
+            except Empty:
+                pass
+            finally:
+                Gtk.main_iteration_do(False) # a blocking version with timeout would have been nice
+                sleep(0.01)
+        [found, notfound] = result
+        self.notify(found, notfound)
+        invoker.join()
+
     def is_valid(self, f):
         return f.get_mime_type() in periscope.SUPPORTED_FORMATS and (f.get_uri_scheme() == 'file' or f.get_uri_scheme() == 'smb')
-        
+
     def notify(self, found, notfound):
-        ''' Use pynotify to warn the user that subtitles have been downloaded'''
-        if pynotify:
+        ''' Use Notify to warn the user that subtitles have been downloaded'''
+        if Notify:
             title = "periscope found %s out of %s subtitles" %(len(found), len(found) + len(notfound))
             if len(notfound) > 0:
                 msg = _("Could not find: \n")
                 filenames = [os.path.basename(f["filename"]) for f in notfound]
                 msg += "\n".join(filenames)
                 msg += "\n"
-                
+
             if len(found) > 0:
                 msg = _("Found: \n")
                 filenames = [os.path.basename(f["filename"]) + " ("+f['lang']+")" for f in found]
                 msg += "\n".join(filenames)
-                
-            n = pynotify.Notification(title, msg, gtk.STOCK_FIND_AND_REPLACE)
-            n.set_timeout(pynotify.EXPIRES_DEFAULT)
+
+            n = Notify.Notification.new(title, msg, Gtk.STOCK_FIND_AND_REPLACE)
+            n.set_timeout(Notify.EXPIRES_DEFAULT)
             n.show()
         else:
             pass
-            
-        
-class PeriscopeInvoker(threading.Thread):
+
+class PeriscopeInvoker(Process):
     ''' Thread that will call persicope in the background'''
-    def __init__(self, filenames, callback, cache_folder):
+    def __init__(self, filenames, cache_folder, queue):
         self.filenames = filenames
-        self.callback = callback
         self.found = []
         self.notfound = []
         self.cache_folder = cache_folder
-        threading.Thread.__init__(self)
+        self.queue = queue
+        Process.__init__(self)
 
     def run(self):
         subdl = periscope.Periscope(self.cache_folder)
+        print "prefered languages: %s" %subdl.preferedLanguages
         for filename in self.filenames:
             subtitle = subdl.downloadSubtitle(filename, subdl.preferedLanguages)
             if subtitle:
+                del subtitle["plugin"] # multiprocessing Queue won't be able to pickle this and will bark
                 self.found.append(subtitle)
             else:
                 self.notfound.append({"filename": filename })
-        self.callback(self.found, self.notfound)
+        self.queue.put([self.found, self.notfound])
+        self.queue.close() # we won't have anything more to transmit to the parent process
