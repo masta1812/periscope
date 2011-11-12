@@ -26,7 +26,7 @@ PACKAGE = 'periscope-gnome'
 VERSION = version.VERSION
 
 try:
-	os.makedirs("./debian/periscope-gnome/usr/lib/nautilus/extensions-2.0/python")
+	os.makedirs("./debian/periscope-gnome/usr/share/nautilus-python/extensions")
 except:
 	pass
-shutil.copy('periscope-nautilus/periscope-nautilus.py', 'debian/periscope-gnome/usr/lib/nautilus/extensions-2.0/python')
+shutil.copy('periscope-nautilus/periscope-nautilus.py', 'debian/periscope-gnome/usr/share/nautilus-python/extensions')
