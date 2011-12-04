@@ -49,14 +49,14 @@ class Podnapisi(SubtitleDatabase.SubtitleDB):
                 for lang in langs:
                     #query one language at a time
                     subs_lang = self.query(fname, [lang])
-                    if not subs_lang:
+                    if not subs_lang and fname.count(".["):
                         # Try to remove the [VTV] or [EZTV] at the end of the file
                         teamless_filename = fname[0 : fname.rfind(".[")]
                         subs_lang = self.query(teamless_filename, langs)
                     subs += subs_lang
             else:
                 subs_lang = self.query(fname, None)
-                if not subs_lang:
+                if not subs_lang and fname.count(".["):
                     # Try to remove the [VTV] or [EZTV] at the end of the file
                     teamless_filename = fname[0 : fname.rfind(".[")]
                     subs_lang = self.query(teamless_filename, None)
