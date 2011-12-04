@@ -181,12 +181,12 @@ class Podnapisi2TestCase(unittest.TestCase):
         results = subdb.process("/burn/Entourage.S07E01.Stunted.HDTV.XviD-FQM.avi", None)
         print results
         assert len(results) > 5, "Not enough result could be found for The.Office.US.S06E01.HDTV.XviD-2HD and no languages (expected 6)"
-
+'''
 class PodnapisiTestCase(unittest.TestCase):
     def runTest(self):
         import Podnapisi
-        subdb = Podnapisi.Podnapisi()
-        results = subdb.process("Community.S01E01.Pilot.HDTV.XviD-FQM.avi", None)
+        subdb = Podnapisi.Podnapisi(None, None)
+        results = subdb.process("Game.Of.Thrones.S01E10.mkv", None)
         assert len(results) > 5, "Not enough result could be found for Community.S01E01.Pilot.HDTV.XviD-FQM.avi and no languages (expected 6)"
         
         # Download the first
@@ -194,7 +194,7 @@ class PodnapisiTestCase(unittest.TestCase):
         results[0]["filename"] = "/tmp/testPodnapisi.avi"
         subdb.createFile(results[0])
         #TODO Check that /tmp/testPodnapisi.srt exists
-
+'''
 class PodnapisiTestCaseMultiPart(unittest.TestCase):
     def runTest(self):
         import Podnapisi
