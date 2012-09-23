@@ -55,7 +55,7 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
         filehash = self.get_hash(filepath)
         log.debug('File hash : %s' % filehash)
         # Make the search
-        params = {'action' : 'download', 'hash' : filehash}
+        params = {'action' : 'search', 'hash' : filehash }
         search_url = self.base_url.format(urllib.urlencode(params))
         log.debug('Query URL : %s' % search_url)
         req = urllib2.Request(search_url)
@@ -71,7 +71,7 @@ class TheSubDB(SubtitleDatabase.SubtitleDB):
                     result = {}
                     result['release'] = filepath
                     result['lang'] = lang
-                    result['link'] = "%s?action=%s&hash=%s&language=%s" % (self.host, "download", filehash, lang)
+                    result['link'] = self.base_url.format(urllib.urlencode({'action':'download', 'hash':filehash , 'language' :lang}))
                     result['page'] = result['link']
                     subs.append(result)
             return subs
