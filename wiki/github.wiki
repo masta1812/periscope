@@ -1,5 +1,4 @@
 #summary Moved to github
 
-= Introduction =
 = Git Repository= 
 The source can be viewed from [https://github.com/patrickdessalle/periscope/] github
